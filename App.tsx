@@ -1,20 +1,24 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { config } from "@gluestack-ui/config";
+import { GluestackUIProvider } from "@gluestack-ui/themed";
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { LoginScreen } from "./src/Screens/Login/Login";
+import { HomeScreen } from "./src/Screens/Home/Home";
+import { ProductsScreen } from "./src/Screens/Products/Producst";
+import { CreateScreen } from "./src/Screens/Login/Create";
 
+const Stack = createNativeStackNavigator();
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <GluestackUIProvider config={config}>
+      <NavigationContainer>
+        <Stack.Navigator screenOptions={{ headerShown: false }}>
+          <Stack.Screen name={"Login"} component={LoginScreen} />
+          <Stack.Screen name={"Home"} component={HomeScreen} />
+          <Stack.Screen name={"Products"} component={ProductsScreen} />
+          <Stack.Screen name={'Create'} component={CreateScreen}/>
+        </Stack.Navigator>
+      </NavigationContainer>
+    </GluestackUIProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
