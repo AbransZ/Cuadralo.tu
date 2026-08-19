@@ -11,10 +11,12 @@ import {
   Text,
   VStack,
 } from "@gluestack-ui/themed";
+import { useNavigation } from "@react-navigation/native";
 import { useAppTheme } from "../../Theme/ThemeManager";
-import { SvgUri } from "react-native-svg";
+
 
 export function LoginScreen() {
+  const navigation = useNavigation();
   const { color, isDark, onthemeChange } = useAppTheme();
   return (
     <HStack flex={1} bg={color.background}>
@@ -54,7 +56,7 @@ export function LoginScreen() {
 
             <Input
               variant={"outline"}
-              size={"xl"}
+              size={"md"}
               borderRadius={10}
               borderColor={color.primary}
             >
@@ -63,7 +65,7 @@ export function LoginScreen() {
 
             <Input
               variant={"outline"}
-              size={"xl"}
+              size={"md"}
               mt={"$4"}
               borderRadius={10}
               borderColor={color.primary}
@@ -76,27 +78,35 @@ export function LoginScreen() {
               <Button variant="link" alignSelf="center" pr={10}>
                 <Image
                   source={require("../../sources/Images/eye.png")}
-                  size="xs"
+                  size="2xs"
                   tintColor={color.textPrimary}
                   
                 />
               </Button>
             </Input>
-            <Button variant="link" alignSelf="flex-start">
-              <Text color={color.primary} size="lg" >
+            <Button
+              variant="link"
+              alignSelf="flex-start"
+              onPress={() => navigation.navigate("ForgotPassword" as never)}
+            >
+              <Text color={color.primary} size="md" >
                 Olvidaste tu contraseña?
               </Text>
             </Button>
-            <Button variant= "link"alignSelf="flex-start">
+            <Button
+              variant="link"
+              alignSelf="flex-start"
+              onPress={() => navigation.navigate("Create" as never)}
+            >
               
-              <Text color={color.primary} size="lg">
+              <Text color={color.primary} size="md">
             
                 Crear cuenta
               </Text>
             </Button>
 
             <Button
-              size={"xl"}
+              size={"lg"}
               variant={"solid"}
               mt={"$6"}
               action={"primary"}

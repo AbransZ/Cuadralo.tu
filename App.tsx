@@ -6,6 +6,7 @@ import { LoginScreen } from "./src/Screens/Login/Login";
 import { HomeScreen } from "./src/Screens/Home/Home";
 import { ProductsScreen } from "./src/Screens/Products/Producst";
 import { CreateScreen } from "./src/Screens/Login/Create";
+import { ForgotPasswordScreen } from "./src/Screens/Login/ForgotPassword";
 
 const Stack = createNativeStackNavigator();
 export default function App() {
@@ -17,6 +18,7 @@ export default function App() {
           <Stack.Screen name={"Home"} component={HomeScreen} />
           <Stack.Screen name={"Products"} component={ProductsScreen} />
           <Stack.Screen name={'Create'} component={CreateScreen}/>
+          <Stack.Screen name={"ForgotPassword"} component={ForgotPasswordScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </GluestackUIProvider>
