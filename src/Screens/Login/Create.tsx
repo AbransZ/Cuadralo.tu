@@ -13,6 +13,7 @@ import {
 } from "@gluestack-ui/themed";
 import { useNavigation } from "@react-navigation/native";
 import { useWindowDimensions } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { useAppTheme } from "../../Theme/ThemeManager";
 import { useCreateViewModel } from "./CreateViewModel";
 
@@ -21,21 +22,22 @@ export function CreateScreen() {
     const { color } = useAppTheme();
     const { width } = useWindowDimensions();
     const isWideScreen = width >= 768;
-    const vm = useCreateViewModel();
+    const viewmodel = useCreateViewModel();
 
     const handleCreate = async () => {
-        const result = await vm.submit();
+        const result = await viewmodel.submit();
         if (result) {
             navigation.goBack();
         }
     };
 
     return (
-        <HStack
-            flex={1}
-            bg={color.background}
-            flexDirection={isWideScreen ? "row" : "column"}
-        >
+        <SafeAreaView style={{ flex: 1, backgroundColor: color.background }}>
+            <HStack
+                flex={1}
+                bg={color.background}
+                flexDirection={isWideScreen ? "row" : "column"}
+            >
             <Box flex={2} p={isWideScreen ? "$20" : "$6"} alignItems="center" justifyContent="center">
                 <Image
                     source={require("../../sources/Images/Gemini_Generated_Image_qpeg91qpeg91qpeg.png")}
@@ -83,9 +85,9 @@ export function CreateScreen() {
                                 </Text>
                             </VStack>
 
-                            {vm.error && (
+                            {viewmodel.error && (
                                 <Text color="#EF4444" size="sm" textAlign="center">
-                                    {vm.error}
+                                    {viewmodel.error}
                                 </Text>
                             )}
 
@@ -93,8 +95,8 @@ export function CreateScreen() {
                                 <InputField
                                     placeholder="Nombre completo"
                                     color={color.textPrimary}
-                                    value={vm.nombre}
-                                    onChangeText={vm.setNombre}
+                                    value={viewmodel.nombre}
+                                    onChangeText={viewmodel.setNombre}
                                 />
                             </Input>
 
@@ -103,8 +105,8 @@ export function CreateScreen() {
                                     placeholder="Correo electronico"
                                     keyboardType="email-address"
                                     color={color.textPrimary}
-                                    value={vm.correo}
-                                    onChangeText={vm.setCorreo}
+                                    value={viewmodel.correo}
+                                    onChangeText={viewmodel.setCorreo}
                                 />
                             </Input>
 
@@ -113,8 +115,8 @@ export function CreateScreen() {
                                     placeholder="Usuario"
                                     autoCapitalize="none"
                                     color={color.textPrimary}
-                                    value={vm.usuario}
-                                    onChangeText={vm.setUsuario}
+                                    value={viewmodel.usuario}
+                                    onChangeText={viewmodel.setUsuario}
                                 />
                             </Input>
 
@@ -123,8 +125,8 @@ export function CreateScreen() {
                                     placeholder="Contrasena"
                                     type="password"
                                     color={color.textPrimary}
-                                    value={vm.contrasenia}
-                                    onChangeText={vm.setContrasenia}
+                                    value={viewmodel.contrasenia}
+                                    onChangeText={viewmodel.setContrasenia}
                                 />
                             </Input>
 
@@ -133,8 +135,8 @@ export function CreateScreen() {
                                     placeholder="Confirmar contrasena"
                                     type="password"
                                     color={color.textPrimary}
-                                    value={vm.confirmarContrasenia}
-                                    onChangeText={vm.setConfirmarContrasenia}
+                                    value={viewmodel.confirmarContrasenia}
+                                    onChangeText={viewmodel.setConfirmarContrasenia}
                                 />
                             </Input>
 
@@ -146,9 +148,9 @@ export function CreateScreen() {
                                 borderRadius={10}
                                 bgColor={color.primary}
                                 onPress={handleCreate}
-                                disabled={vm.loading}
+                                disabled={viewmodel.loading}
                             >
-                                <ButtonText>{vm.loading ? "Creando..." : "Crear cuenta"}</ButtonText>
+                                <ButtonText>{viewmodel.loading ? "Creando..." : "Crear cuenta"}</ButtonText>
                             </Button>
 
                             <Button variant="link" onPress={() => navigation.goBack()}>
@@ -160,6 +162,7 @@ export function CreateScreen() {
                     </Box>
                 </ScrollView>
             </Center>
-        </HStack>
+            </HStack>
+        </SafeAreaView>
     );
 }

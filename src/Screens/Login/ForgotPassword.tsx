@@ -13,6 +13,7 @@ import {
 } from "@gluestack-ui/themed";
 import { useNavigation } from "@react-navigation/native";
 import { useWindowDimensions } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { useAppTheme } from "../../Theme/ThemeManager";
 
 export function ForgotPasswordScreen() {
@@ -22,11 +23,12 @@ export function ForgotPasswordScreen() {
   const isWideScreen = width >= 768;
 
   return (
-    <HStack
-      flex={1}
-      bg={color.background}
-      flexDirection={isWideScreen ? "row" : "column"}
-    >
+    <SafeAreaView style={{ flex: 1, backgroundColor: color.background }}>
+      <HStack
+        flex={1}
+        bg={color.background}
+        flexDirection={isWideScreen ? "row" : "column"}
+      >
       <Box flex={2} p={isWideScreen ? "$20" : "$6"} alignItems="center" justifyContent="center">
         <Image
           source={require("../../sources/Images/Gemini_Generated_Image_qpeg91qpeg91qpeg.png")}
@@ -108,6 +110,7 @@ export function ForgotPasswordScreen() {
           </Box>
         </ScrollView>
       </Center>
-    </HStack>
+      </HStack>
+    </SafeAreaView>
   );
 }

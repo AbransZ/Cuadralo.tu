@@ -23,8 +23,13 @@ export function useCreateViewModel() {
 
     setLoading(true);
     setError(null);
+
+    const nombreTrimmed = nombre.trim();
+    const correoTrimmed = correo.trim();
+    const usuarioTrimmed = usuario.trim();
+
     try {
-      const data: CreateUserRequest = { nombre, correo, usuario, contrasenia };
+      const data: CreateUserRequest = { nombre: nombreTrimmed, correo: correoTrimmed, usuario: usuarioTrimmed, contrasenia };
       const response = await axios.post<CreateUserResponse>(`${API_URL}/auth/create`, data);
       return response.data;
     } catch (err) {

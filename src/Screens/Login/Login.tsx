@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   Box,
   Button,
@@ -13,20 +14,29 @@ import {
 } from "@gluestack-ui/themed";
 import { useNavigation } from "@react-navigation/native";
 import { useWindowDimensions } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { useAppTheme } from "../../Theme/ThemeManager";
+import { useLoginViewModel } from "./LoginViewModel";
 
 export function LoginScreen() {
   const navigation = useNavigation();
   const { color } = useAppTheme();
   const { width } = useWindowDimensions();
   const isWideScreen = width >= 768;
+  const viewmodel = useLoginViewModel();
+  const [showPassword, setShowPassword] = useState(false);
+
+  const handleLogin = async () => {
+    await viewmodel.submit();
+  };
 
   return (
-    <HStack
-      flex={1}
-      bg={color.background}
-      flexDirection={isWideScreen ? "row" : "column"}
-    >
+    <SafeAreaView style={{ flex: 1, backgroundColor: color.background }}>
+      <HStack
+        flex={1}
+        bg={color.background}
+        flexDirection={isWideScreen ? "row" : "column"}
+      >
       <Box flex={2} p={isWideScreen ? "$20" : "$6"} alignItems="center" justifyContent="center">
         <Image
           source={require("../../sources/Images/Gemini_Generated_Image_qpeg91qpeg91qpeg.png")}
@@ -74,34 +84,41 @@ export function LoginScreen() {
                 </Text>
               </VStack>
 
-              <Input
-                variant="outline"
-                size="md"
-                borderRadius={10}
-                borderColor={color.primary}
-              >
-                <InputField placeholder="Usuario" color={color.textPrimary} />
+              {viewmodel.error && (
+                <Text color="#EF4444" size="sm" textAlign="center">
+                  {viewmodel.error}
+                </Text>
+              )}
+
+              <Input variant="outline" size="md" borderRadius={10} borderColor={color.primary}>
+                <InputField
+                  placeholder="Usuario"
+                  color={color.textPrimary}
+                  value={viewmodel.usuario}
+                  onChangeText={viewmodel.setUsuario}
+                />
               </Input>
 
-              <Input
-                variant="outline"
-                size="md"
-                borderRadius={10}
-                borderColor={color.primary}
-              >
-                <InputField
-                  placeholder="Contrasena"
-                  type="password"
-                  color={color.textPrimary}
-                />
-                <Button variant="link" alignSelf="center" pr={10}>
-                  <Image
-                    source={require("../../sources/Images/eye.png")}
-                    size="2xs"
-                    tintColor={color.textPrimary}
+              <HStack alignItems="center" borderRadius={10} borderWidth={1} borderColor={color.primary} overflow="hidden">
+                <Input flex={1} variant="outline" size="md" borderWidth={0}>
+                  <InputField
+                    placeholder="Contrasena"
+                    type={showPassword ? "text" : "password"}
+                    color={color.textPrimary}
+                    value={viewmodel.contrasenia}
+                    onChangeText={viewmodel.setContrasenia}
                   />
+                </Input>
+                <Button
+                  variant="link"
+                  px="$3"
+                  onPress={() => setShowPassword(!showPassword)}
+                >
+                  <Text size="lg" color={color.textSecondary}>
+                    {showPassword ? "Ocultar" : "Mostrar"}
+                  </Text>
                 </Button>
-              </Input>
+              </HStack>
 
               <Button
                 variant="link"
@@ -130,13 +147,16 @@ export function LoginScreen() {
                 action="primary"
                 borderRadius={10}
                 bgColor={color.primary}
+                onPress={handleLogin}
+                disabled={viewmodel.loading}
               >
-                <ButtonText>Ingresar</ButtonText>
+                <ButtonText>{viewmodel.loading ? "Ingresando..." : "Ingresar"}</ButtonText>
               </Button>
             </VStack>
           </Box>
         </ScrollView>
       </Center>
-    </HStack>
+      </HStack>
+    </SafeAreaView>
   );
 }

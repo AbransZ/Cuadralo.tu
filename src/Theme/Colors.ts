@@ -1,15 +1,14 @@
 export const LightColors = {
-  background: '#F8F9FA',      // Fondo base
-  surface: '#FFFFFF',         // Tarjetas / Formularios
-  primary: '#4F46E5',         // Botones
-  accent: '#10B981',          // Bordes activos / Focus
-  textPrimary: '#111827',     // Textos principales
-  textSecondary: '#6B7280',   // Subtítulos
-  border: '#E5E7EB',          // Bordes sutiles
+  background: '#F1F5F9',
+  surface: '#FFFFFF',
+  primary: '#4F46E5',
+  accent: '#10B981',
+  textPrimary: '#111827',
+  textSecondary: '#6B7280',
+  border: '#CBD5E1',
 };
 
-// Paleta Oscura
- export const DarkColors = {
+export const DarkColors = {
   background: '#0F172A',
   surface: '#1E293B',
   primary: '#6366F1',
@@ -19,4 +18,4 @@ export const LightColors = {
   border: '#334155',
 };
 
-export type appThemeManager = typeof LightColors 
+export type appThemeManager = typeof LightColors
