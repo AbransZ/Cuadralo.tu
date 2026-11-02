@@ -11,7 +11,7 @@ EXPOSE 8081
 CMD ["npx", "expo", "start", "--web", "--host", "lan", "--port", "8081"]
 
 FROM base AS builder
-ARG ARG EXPO_PUBLIC_API_URL=http://api-cuadralo.192.168.0.20.sslip.io
+ARG EXPO_PUBLIC_API_URL=http://api-cuadralo.192.168.0.20.sslip.io
 ENV CI=1
 ENV EXPO_PUBLIC_API_URL=$EXPO_PUBLIC_API_URL
 COPY . .
