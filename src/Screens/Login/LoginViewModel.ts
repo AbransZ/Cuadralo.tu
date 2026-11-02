@@ -3,7 +3,9 @@ import axios from "axios";
 import { LoginRequest, LoginResponse } from "./Data/Models/User";
 import { useAuthStore } from "../../Store/AuthStore";
 
-const API_URL = process.env.EXPO_PUBLIC_API_URL;
+const API_URL =
+  process.env.EXPO_PUBLIC_API_URL ||
+  "http://api-cuadralo.192.168.0.20.sslip.io";
 console.log("[LoginViewModel] API_URL:", API_URL);
 
 export function useLoginViewModel() {
