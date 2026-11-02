@@ -1,9 +1,8 @@
-import { useState, useEffect, useCallback } from "react";
 import { useWindowDimensions } from "react-native";
 import {
   Box, Text, VStack, HStack, ScrollView, Input, InputField,
   Button, ButtonText, Modal, ModalBackdrop, ModalContent,
-  ModalHeader, ModalBody, ModalCloseButton, ModalFooter,
+  ModalHeader, ModalBody, ModalCloseButton,
 } from "@gluestack-ui/themed";
 import { useAppTheme } from "../../../Theme/ThemeManager";
 import { useHomeAdminViewModel } from "./HomeAdminViewModel";
@@ -14,32 +13,24 @@ export function UsersSection() {
   const { color } = useAppTheme();
   const { width } = useWindowDimensions();
   const isWideScreen = width >= 768;
-  const [showModal, setShowModal] = useState(false);
-  const [datoBuscado, setDatoBuscado] = useState("");
 
   const {
     empleadosDelAdmin,
     usuariosEncontrados,
     cargandoEmpleados,
-    buscarUsuariosDisponibles,
+    cargandoBusqueda,
+    contratandoUsuarioId,
+    errorCarga,
+    errorBusqueda,
+    errorContratacion,
+    mensajeExito,
+    mostrarModalAsignacion,
+    textoBusqueda,
+    abrirModalAsignacion,
+    cerrarModalAsignacion,
+    setTextoBusqueda,
     contratarUsuario,
   } = useHomeAdminViewModel();
-
-  useEffect(() => {
-    if (showModal) {
-      buscarUsuariosDisponibles("");
-    }
-  }, [showModal, buscarUsuariosDisponibles]);
-
-  const handleBuscar = useCallback((textoBusqueda: string) => {
-    setDatoBuscado(textoBusqueda);
-    buscarUsuariosDisponibles(textoBusqueda);
-  }, [buscarUsuariosDisponibles]);
-
-  const handleContratar = async (idUsuario: number) => {
-    await contratarUsuario(idUsuario);
-    await buscarUsuariosDisponibles(datoBuscado);
-  };
 
   return (
     <ScrollView bg={color.background} flex={1}>
@@ -75,6 +66,10 @@ export function UsersSection() {
             Usuarios Registrados
           </Text>
 
+          {errorCarga && (
+            <Text size="sm" color="#EF4444" mb="$3">{errorCarga}</Text>
+          )}
+
           {cargandoEmpleados && empleadosDelAdmin.length === 0 ? (
             <Text size="sm" color={color.textSecondary}>Cargando empleados...</Text>
           ) : empleadosDelAdmin.length === 0 ? (
@@ -101,13 +96,13 @@ export function UsersSection() {
             </VStack>
           )}
 
-          <Button size="md" variant="solid" action="primary" borderRadius={10} bgColor={color.primary} mt="$4" onPress={() => setShowModal(true)}>
+          <Button size="md" variant="solid" action="primary" borderRadius={10} bgColor={color.primary} mt="$4" onPress={abrirModalAsignacion}>
             <ButtonText>+ Asignar Nuevo Usuario</ButtonText>
           </Button>
         </Box>
       </VStack>
 
-      <Modal isOpen={showModal} onClose={() => setShowModal(false)} size={isWideScreen ? "lg" : "full"}>
+      <Modal isOpen={mostrarModalAsignacion} onClose={cerrarModalAsignacion} size={isWideScreen ? "lg" : "full"}>
         <ModalBackdrop bgColor="rgba(0,0,0,0.5)" />
         <ModalContent mx="$6" my="$8" bg={color.surface} borderRadius="$xl" style={{ maxHeight: "85%" }}>
           <ModalHeader borderBottomWidth={1} borderBottomColor={color.border} pb="$3">
@@ -121,10 +116,24 @@ export function UsersSection() {
             <ScrollView showsVerticalScrollIndicator={false}>
               <VStack space="md" pt="$4">
                 <Input variant="outline" size="md" borderRadius={10} borderColor={color.primary}>
-                  <InputField placeholder="Buscar usuario por nombre o correo" color={color.textPrimary} value={datoBuscado} onChangeText={handleBuscar} />
+                  <InputField placeholder="Buscar usuario por nombre o correo" color={color.textPrimary} value={textoBusqueda} onChangeText={setTextoBusqueda} />
                 </Input>
 
-                {usuariosEncontrados.length === 0 ? (
+                {errorBusqueda && (
+                  <Text size="sm" color="#EF4444" mt="$1">{errorBusqueda}</Text>
+                )}
+
+                {errorContratacion && (
+                  <Text size="sm" color="#EF4444" mt="$1">{errorContratacion}</Text>
+                )}
+
+                {mensajeExito && (
+                  <Text size="sm" color={color.accent} mt="$1">{mensajeExito}</Text>
+                )}
+
+                {cargandoBusqueda ? (
+                  <Text size="sm" color={color.textSecondary} mt="$2">Buscando usuarios...</Text>
+                ) : usuariosEncontrados.length === 0 ? (
                   <Text size="sm" color={color.textSecondary} mt="$2">No se encontraron usuarios disponibles</Text>
                 ) : (
                   <VStack space="md" mt="$2">
@@ -133,14 +142,25 @@ export function UsersSection() {
                         <HStack justifyContent="space-between" alignItems="center">
                           <VStack flex={1}>
                             <Text size="sm" color={color.textSecondary}>ID: {usuarioEncontrado.id}</Text>
-                            <Text size="md" fontWeight="$bold" color={color.textPrimary}>{usuarioEncontrado.correo}</Text>
+                            <Text size="md" fontWeight="$bold" color={color.textPrimary}>{usuarioEncontrado.nombre}</Text>
+                            <Text size="sm" color={color.textSecondary}>{usuarioEncontrado.correo}</Text>
                             <Text size="xs" color={color.textSecondary} mt="$1">@{usuarioEncontrado.usuario}</Text>
                             <Text size="xs" color={color.textSecondary} mt="$1">
                               Registrado: {new Date(usuarioEncontrado.createdAt).toLocaleDateString()}
                             </Text>
                           </VStack>
-                          <Button size="sm" variant="solid" action="primary" borderRadius={8} bgColor={color.primary} onPress={() => handleContratar(usuarioEncontrado.id)}>
-                            <ButtonText>Contratar</ButtonText>
+                          <Button
+                            size="sm"
+                            variant="solid"
+                            action="primary"
+                            borderRadius={8}
+                            bgColor={color.primary}
+                            disabled={contratandoUsuarioId !== null}
+                            onPress={() => contratarUsuario(usuarioEncontrado.id)}
+                          >
+                            <ButtonText>
+                              {contratandoUsuarioId === usuarioEncontrado.id ? "Contratando..." : "Contratar"}
+                            </ButtonText>
                           </Button>
                         </HStack>
                       </Box>

@@ -34,3 +34,24 @@ export interface LoginResponse {
   user: User;
   message: string;
 }
+
+export interface UsuarioResumen {
+  id: number;
+  nombre: string;
+  correo: string;
+  usuario: string;
+  nivelUsuario: number;
+  activo: boolean;
+  productosRegistrados: number[];
+  adminId: number | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ForgotPasswordRequest {
+  correo: string;
+}
+
+export interface ForgotPasswordResponse {
+  message: string;
+}

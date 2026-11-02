@@ -1,0 +1,31 @@
+services:
+  web:
+    build:
+      context: .
+      target: production
+      args:
+        EXPO_PUBLIC_API_URL: ${EXPO_PUBLIC_API_URL}
+    image: cuadralo-web:latest
+    ports:
+      - "8080:80"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost/"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  web-dev:
+    build:
+      context: .
+      target: development
+    image: cuadralo-web-dev:latest
+    ports:
+      - "8081:8081"
+    environment:
+      EXPO_PUBLIC_API_URL: ${EXPO_PUBLIC_API_URL}
+    volumes:
+      - .:/app
+      - /app/node_modules
+    profiles:
+      - dev

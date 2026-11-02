@@ -15,12 +15,18 @@ import { useNavigation } from "@react-navigation/native";
 import { useWindowDimensions } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useAppTheme } from "../../Theme/ThemeManager";
+import { useForgotPasswordViewModel } from "./ForgotPasswordViewModel";
 
 export function ForgotPasswordScreen() {
   const navigation = useNavigation();
   const { color } = useAppTheme();
   const { width } = useWindowDimensions();
   const isWideScreen = width >= 768;
+  const viewmodel = useForgotPasswordViewModel();
+
+  const handleSubmit = async () => {
+    await viewmodel.submit();
+  };
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: color.background }}>
@@ -76,6 +82,18 @@ export function ForgotPasswordScreen() {
                 </Text>
               </VStack>
 
+              {viewmodel.error && (
+                <Text color="#EF4444" size="sm" textAlign="center">
+                  {viewmodel.error}
+                </Text>
+              )}
+
+              {viewmodel.mensaje && (
+                <Text color={color.accent} size="sm" textAlign="center">
+                  {viewmodel.mensaje}
+                </Text>
+              )}
+
               <Input
                 variant="outline"
                 size="md"
@@ -87,6 +105,8 @@ export function ForgotPasswordScreen() {
                   keyboardType="email-address"
                   autoCapitalize="none"
                   color={color.textPrimary}
+                  value={viewmodel.correo}
+                  onChangeText={viewmodel.setCorreo}
                 />
               </Input>
 
@@ -97,8 +117,12 @@ export function ForgotPasswordScreen() {
                 action="primary"
                 borderRadius={10}
                 bgColor={color.primary}
+                onPress={handleSubmit}
+                disabled={viewmodel.loading}
               >
-                <ButtonText>Recuperar contrasena</ButtonText>
+                <ButtonText>
+                  {viewmodel.loading ? "Enviando..." : "Recuperar contrasena"}
+                </ButtonText>
               </Button>
 
               <Button variant="link" onPress={() => navigation.goBack()}>
